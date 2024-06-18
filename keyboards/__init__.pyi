@@ -1,1 +1,1 @@
-from . import kb, admin
+from . import kb_user_profile

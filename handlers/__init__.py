@@ -1,1 +1,1 @@
-from . import commands, messages, admin
+from . import commands, messages

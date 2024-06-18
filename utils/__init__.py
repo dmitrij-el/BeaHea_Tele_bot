@@ -1,1 +1,1 @@
-from . import easy_funcs, calculators
+from . import easy_funcs

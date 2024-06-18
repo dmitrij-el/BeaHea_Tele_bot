@@ -1,15 +1,15 @@
+from datetime import datetime
+
 from aiogram import Router
-from aiogram.types import Message, BotCommand
+from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-
-from Tbot_beahea.keyboards import kb
-from Tbot_beahea.data import db_funcs, text
-from Tbot_beahea.states.states import StateUserProfile
+from keyboards import kb_user_profile
+from data import db_funcs_user_account, text, models_peewee
+from states.states import StateGen, StateMenu, StateUserProfile
 
 router = Router()
-
 
 
 @router.message(Command('start'))
@@ -19,20 +19,20 @@ async def reg_profile(msg: Message, state: FSMContext):
     Если юзера нет записывает данные пользователя в БД.
     Если есть, предлагает обнулить данные.
 
-    :param msg:
-    :param state:
-    :return:
+
+    :param msg: Сообщение от пользователя
+    :param state: Состояние бота
+
     """
 
     user_id = msg.from_user.id
-    await msg.answer(text.greet.format(name=msg.from_user.id))
-    if db_funcs.check_user_datas(user_id=user_id):
-        await msg.answer(text=f'Вы уже зарегистрированы.',
-                         reply_markup=kb.user_profile(user_id=msg.from_user.id),
+    user = db_funcs.check_user_datas(user_id=user_id)
+    if user:
+        await msg.answer(text.greet_cont.format(user_id=user_id),
+                         reply_markup=kb_user_profile.ReplyKeyboardRemove()
                          )
-        await msg.answer(text=f'Хотите очистить профиль?.',
-                         reply_markup = kb.choiceYN(text.clear_account_question),
-                         )
+        await msg.answer(text=text.account_qst_clear,
+                         reply_markup=kb_user_profile.choice_delete_account(text.weather_menu))
         await state.set_state(StateUserProfile.clear_profile)
 
     else:
@@ -44,39 +44,42 @@ async def reg_profile(msg: Message, state: FSMContext):
         }
         db_funcs.user_rec_datas_in_reg(acc_dict)
         if db_funcs.check_user_datas(user_id):
-            await msg.answer('Был автоматически создан профиль!')
-            await msg.answer(text=text.menu, reply_markup=kb.main_menu())
+            await msg.answer(text.greet.format(name=msg.from_user.first_name))
+            await msg.answer(text=text.greet_cont,
+                             reply_markup=kb_user_profile.main_menu())
+            await state.set_state(StateMenu.profile)
         else:
             await msg.answer('Произошла критическая ошибка при регистрации. Уведомите пожалуйста администратора.\n'
                              'Следующее сообщение будет отправлено администратору.')
             prompt = msg.text
-            await msg.answer(prompt)
-
-@router.message()
-async def set_commands(bot: BotCommand):
-    commands = [
-        BotCommand(command="/drinks", description="Заказать напитки"),
-        BotCommand(command="/food", description="Заказать блюда"),
-        BotCommand(command="/cancel", description="Отменить текущее действие")
-    ]
-    await bot.set_my_commands(commands)
-
-@router.message(Command('menu'))
-async def menu_handler(msg: Message, state: FSMContext):
-    await msg.answer(text.menu,
-                     reply_markup=kb.main_menu())
+            await msg.answer(text=prompt, reply_markup=kb_user_profile.main_menu())
 
 
+@router.message(Command('main_menu'))
+async def reg_profile(msg: Message, state: FSMContext):
+    """
+    Реагирует на команду 'main_menu'. При вызове отправляет в главное меня.
+
+    :param msg: Сообщение от пользователя
+    :param state: Состояние бота
+    """
+    await msg.answer(text=text.command_found.format(command="main_menu"),
+                     reply_markup=kb_user_profile.ReplyKeyboardRemove())
+    await msg.answer(text=text.menu, reply_markup=kb_user_profile.main_menu())
+    await state.set_state(StateGen.menu)
 
 
 @router.message(Command('help'))
 async def send_help(msg: Message):
-    await msg.answer(text="""
-Вот список команд для использования:
-/start - Запуск бота. Автоматически создается аккаунт. При повторном вызове предлагает сбросить профиль.
-/help - Список команд
-/info - вызов чата со службой поддержки.
-Обратите внимание! Тех. поддержка не отвечает на вопросы медицины, нутрициологии и "какие БАД посоветовать".
+    """
+    Отправляет список команд для использования.
 
+    :param msg: Сообщение от пользователя
+    """
+    await msg.answer(text="Вот список команд для использования")
+    await msg.answer(text="""
+/start - Запуск бота. Автоматически создается аккаунт. При повторном вызове предлагает сбросить профиль.
+/main_menu - Выводит главное меню.
+/help - Список команд
 """,
-                     reply_markup=kb.main_menu())
+                     reply_markup=kb_user_profile.main_menu())

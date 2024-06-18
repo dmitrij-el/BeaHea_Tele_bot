@@ -1,15 +1,20 @@
 from aiogram import F, Router
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
-from Tbot_beahea.keyboards import kb
-from Tbot_beahea.data import db_funcs, text
+from states.states import StateGen
+from data import text, db_funcs_user_account
+from keyboards import kb_user_profile
+
 
 router = Router()
 
 
+@router.message(F.text.lower().in_({"выйти в меню", "главное меню"}))
+async def menu(msg: Message, state: FSMContext):
+    await msg.answer(text=text.close_all_keyboards, reply_markup=kb_user_profile.ReplyKeyboardRemove())
+    await msg.answer(text.menu, reply_markup=kb_user_profile.main_menu())
+    await state.set_state(StateGen.menu)
 
-@router.message(F.text == "Выйти в меню")
-async def menu(msg: Message):
-    await msg.answer(text.menu, reply_markup=kb.main_menu())
 
 
