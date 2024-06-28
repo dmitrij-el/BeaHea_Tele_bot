@@ -10,15 +10,15 @@ import logging
 
 from aiogram.types import (
     KeyboardButton,
-    ReplyKeyboardMarkup,
-    KeyboardButton,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove
 )
 
-from data import db_funcs_user_account
+from data import db_funcs_user_account, text, text_user_profile
 from utils import easy_funcs
-from data.models_peewee import User, Gender, ChannelCom, City, db_beahea
+from data.models_peewee import Gender, ChannelCom, db_beahea
 
 
 def main_menu() -> ReplyKeyboardMarkup:
@@ -27,51 +27,17 @@ def main_menu() -> ReplyKeyboardMarkup:
          KeyboardButton(text="👤 Профиль")]
     ]
     menu_keyboard = ReplyKeyboardMarkup(keyboard=menu_buttons,
-                                        resize_keyboard=True)
+                                        resize_keyboard=True,
+                                        input_field_placeholder='Выберите соответствующую кнопку.')
     return menu_keyboard
 
 
-def user_profile(user_id: int) -> ReplyKeyboardMarkup:
-    user_data = db_funcs.user_get_data(user_id=user_id)
-    if user_data is None:
-        logging.error(f'Не найдет профиль {user_id}')
-        user_profile_buttons = [
-            [KeyboardButton(text="Что-то пошло не так, аккаунт не найден")]]
-
-    else:
-        user_profile_buttons = []
-        filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_data)
-        for key, value in filter_user_datas.items():
-            if key in ['name', 'surname', 'patronymic']:
-                user_profile_buttons[0].append(KeyboardButton(text=filter_user_datas[key]))
-            elif key in ['date_birth', 'gender', 'height', 'weight']:
-                user_profile_buttons[1].append(KeyboardButton(text=filter_user_datas[key]))
-            else:
-                user_profile_buttons[2].append(KeyboardButton(text=filter_user_datas[key]))
-
-    user_profile_keyboard = ReplyKeyboardMarkup(keyboard=user_profile_buttons,
-                                                resize_keyboard=True)
-    return user_profile_keyboard
-
-
-def update_profile_menu() -> ReplyKeyboardMarkup:
-    update_profile_menu_buttons = [
-        [KeyboardButton(text="Главное меню"),
-         KeyboardButton(text="Отменить")]
+def go_to_telegram_channel() -> InlineKeyboardMarkup:
+    telegram_channel_buttons = [
+        [InlineKeyboardButton(text='Эля, Еда и Гантеля.', url='t.me/beahea_public')]
     ]
-    update_profile_menu_keyboard = ReplyKeyboardMarkup(keyboard=update_profile_menu_buttons,
-                                                       resize_keyboard=True)
-    return update_profile_menu_keyboard
-
-
-def clear_profile_menu() -> ReplyKeyboardMarkup:
-    clear_profile_menu_buttons = [
-        [KeyboardButton(text="Главное меню"),
-         KeyboardButton(text="Профиль 👥")]
-    ]
-    clear_profile_menu_keyboard = ReplyKeyboardMarkup(keyboard=clear_profile_menu_buttons,
-                                                      resize_keyboard=True)
-    return clear_profile_menu_keyboard
+    telegram_channel_keyboard = InlineKeyboardMarkup(inline_keyboard=telegram_channel_buttons)
+    return telegram_channel_keyboard
 
 
 def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
@@ -126,3 +92,51 @@ def choose_gender(prompt) -> ReplyKeyboardMarkup:
                                                  resize_keyboard=True,
                                                  input_field_placeholder=prompt)
     return button_gender_keyboard
+
+
+def user_profile(user_id, prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
+    buttons_questions_menu = []
+    for datas in text_user_profile.question_for_profile.values():
+        buttons_questions_menu.append([KeyboardButton(text=datas[0])])
+    buttons_questions_menu.append([KeyboardButton(text='Главное меню')])
+
+    buttons_questions_keyboard = ReplyKeyboardMarkup(keyboard=buttons_questions_menu,
+                                                     resize_keyboard=True,
+                                                     input_field_placeholder=prompt)
+    return buttons_questions_keyboard
+
+
+def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
+    user_data = db_funcs_user_account.user_get_data(user_id=user_id)
+    if user_data is None:
+        logging.error(f'Не найдет профиль {user_id}')
+        user_profile_buttons = [
+            [KeyboardButton(text="Что-то пошло не так, аккаунт не найден")]]
+    else:
+        user_profile_buttons = [[], [], []]
+        filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_data)
+        for key, value in filter_user_datas.items():
+            if key in ['name', 'surname', 'patronymic']:
+                user_profile_buttons[0].append(KeyboardButton(text=filter_user_datas[key]))
+            elif key in ['date_birth', 'gender', 'height', 'weight']:
+                user_profile_buttons[1].append(KeyboardButton(text=filter_user_datas[key]))
+            elif key in ['email', 'phone', 'communication_channels']:
+                user_profile_buttons[2].append(KeyboardButton(text=filter_user_datas[key]))
+
+    user_profile_keyboard = ReplyKeyboardMarkup(keyboard=user_profile_buttons,
+                                                resize_keyboard=True,
+                                                input_field_placeholder='Выберите соответствующую кнопку.')
+    return user_profile_keyboard
+
+
+def user_redactor_question_for_profile(user_id, prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
+
+    redactor_question_buttons = [
+        [KeyboardButton(text="Посмотреть ответы"), KeyboardButton(text="Редактировать ответы")],
+        [KeyboardButton(text='Назад')]
+    ]
+    redactor_question_keyboard = ReplyKeyboardMarkup(keyboard=redactor_question_buttons,
+                                                     resize_keyboard=True,
+                                                     input_field_placeholder=prompt)
+    return redactor_question_keyboard
+

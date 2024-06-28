@@ -39,27 +39,6 @@ async def create_error_profile(clbck: CallbackQuery, state: FSMContext):
     await state.set_state(StateMenu.profile)
 
 
-@router.callback_query(F.data == "user_profile")
-async def user_profile(clbck: CallbackQuery, state: FSMContext):
-    """
-    Колбэк профиля аккаунта.
-    Возвращает в меню профиля.
-    """
-    await clbck.message.answer(text.account_menu_1,
-                               reply_markup=kb_user_profile.ReplyKeyboardRemove())
-    await clbck.message.answer(text.account_menu_2,
-                               reply_markup=kb_user_profile.user_profile(user_id=clbck.from_user.id))
-    await state.set_state(StateMenu.profile)
-
-
-@router.callback_query(F.data == "clear_profile")
-async def clear_profile(clbck: CallbackQuery, state: FSMContext):
-    """
-    Колбэк очистки аккаунта.
-    """
-    await state.set_state(StateUserProfile.clear_profile)
-    await clbck.message.answer(text.clear_account_question,
-                               reply_markup=kb_user_profile.choice_delete_account(text.clear_account_question))
 
 
 @router.callback_query(F.data == "change_name")

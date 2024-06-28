@@ -1,9 +1,8 @@
 """Набор функций для работы с базами данных"""
 
 import logging
-from typing import Tuple, Any
 
-from data.models_peewee import User, City, FavouriteCity, Command, UserHistoryCommands, db_beahea
+from data.models_peewee import User, db_beahea
 
 
 def check_user_datas(user_id: int) -> bool:
@@ -56,9 +55,6 @@ def user_delete_datas(user_id: int) -> bool:
     try:
         with db_beahea:
             user = User.select().where(User.user_id == user_id).get()
-            fvr_city = FavouriteCity.select().where(FavouriteCity.user_id == user.id)
-            if fvr_city:
-                fvr_city.get().delete_instance()
             user.delete_instance()
     except Exception as exp:
         logging.error(f'В процессе удаления пользователя {user_id} произошла непредвиденная ошибка\n'
@@ -91,4 +87,3 @@ def user_update_data(user_id: int, column_datas: str, data: str | int | bool) ->
         logging.error(f'В процессе обновления данных пользователя {user_id} по ключу произошла непредвиденная ошибка\n'
                       f'Ошибка: {exp}')
         return False
-

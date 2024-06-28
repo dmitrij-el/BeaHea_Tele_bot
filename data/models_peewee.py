@@ -105,5 +105,3 @@ class User(BaseUserModel):
 
     class Meta:
         db_table = "user"
-
-

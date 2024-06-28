@@ -29,7 +29,7 @@ def gender_func(*args: list) -> str | None:
         return None
 
 
-def text_buttons_profile(user_data: models.User) -> dict:
+def text_buttons_profile(user_data: models_peewee.User) -> dict:
     """
     Функция для формирования текстового интерфейса клавиатуры в меню профиля
 
@@ -49,7 +49,7 @@ def text_buttons_profile(user_data: models.User) -> dict:
             gender_symbol = gender.symbol
             user_data_dict['gender'] = gender_symbol
 
-    if Noneuser_data.name == None:
+    if user_data.name == None:
         user_data_dict['name'] = 'Имя'
 
     if user_data.surname == None:

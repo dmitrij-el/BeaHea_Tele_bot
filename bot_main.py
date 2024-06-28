@@ -27,13 +27,14 @@ from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.utils.chat_action import ChatActionMiddleware
 
-from data import models_peewee
+from data import models_peewee, text_user_profile
 from config.config import BOT_TOKEN, API_URL_OPEN_WEATHER_DAY
 from handlers import commands, messages
 from state_commands import menu_other_states, user_account_states
 
 
 async def main():
+    f = text_user_profile.question_for_profile
     bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
 
     dp = Dispatcher(storage=MemoryStorage())
@@ -50,6 +51,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    models.create_models()
+    models_peewee.create_models()
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
