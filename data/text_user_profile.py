@@ -176,7 +176,7 @@ account_basic_data = dict(
         comunication_channel='Выберите предпочтительный канал связи.'
     ),
     basic_data_link_datas = dict(
-        name=Us.name,
+        name=StateUserProfileBasicData.name,
         surname=StateUserProfileBasicData.surname,
         patronymic=StateUserProfileBasicData.patronymic,
         date_birth= StateUserProfileBasicData.date_birth,
