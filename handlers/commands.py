@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 
 from keyboards import kb_user_profile
 from data import db_funcs_user_account, text
-from states.states import StateGen, StateMenu, StateUserProfile
+from states.states import StateMenu, StateUserProfile
 
 router = Router()
 
@@ -28,7 +28,7 @@ async def handler_start(msg: Message, state: FSMContext):
     user = db_funcs_user_account.check_user_datas(user_id=user_id)
     if user:
         await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_user_profile.main_menu())
-        await state.set_state(StateGen.menu)
+        await state.set_state(StateMenu.menu)
 
     else:
         acc_dict = {
@@ -37,17 +37,17 @@ async def handler_start(msg: Message, state: FSMContext):
             'surname': msg.from_user.last_name,
             'username': msg.from_user.username
         }
-        db_funcs_user_account.user_rec_datas_in_reg(acc_dict)
+        db_funcs_user_account.user_rec_datas_in_reg(user_id=user_id, acc_dict = acc_dict)
         if db_funcs_user_account.check_user_datas(user_id):
             await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_user_profile.main_menu())
         else:
             await msg.answer(text=text.err_reg_fatal)
             prompt = msg.text
             await msg.answer(text=prompt, reply_markup=kb_user_profile.main_menu())
-    await state.set_state(StateGen.menu)
+    await state.set_state(StateMenu.menu)
 
 
-@router.message(Command('main_menu'))
+@router.message(Command('menu'))
 async def handler_main_menu(msg: Message, state: FSMContext):
     """
     Реагирует на команду 'main_menu'. При вызове отправляет в главное меня.
@@ -55,20 +55,19 @@ async def handler_main_menu(msg: Message, state: FSMContext):
     :param msg: Сообщение от пользователя
     :param state: Состояние бота
     """
-    await msg.answer(text=text.command_found.format(command="main_menu"),
-                     reply_markup=kb_user_profile.ReplyKeyboardRemove())
     await msg.answer(text=text.menu, reply_markup=kb_user_profile.main_menu())
-    await state.set_state(StateGen.menu)
+    await msg.delete()
+    await state.set_state(StateMenu.menu)
 
 
 @router.message(Command('help'))
-async def handler_send_help(msg: Message):
+async def handler_send_help(msg: Message, state: FSMContext):
     """
     Отправляет список команд для использования.
 
     :param msg: Сообщение от пользователя
     """
-    await state.set_state(StateGen.menu)
+    await state.set_state(StateMenu.menu)
     await msg.answer(text="Вот список команд для использования")
     await msg.answer(text="""
 /start - Запуск бота. Автоматически создается аккаунт. При повторном вызове предлагает сбросить профиль.

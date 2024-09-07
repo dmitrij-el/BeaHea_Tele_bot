@@ -46,7 +46,7 @@ async def change_name(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения имени.
     """
-    await state.set_state(state=StateUserProfile.change_name)
+    await state.set_state(state=StateUserProfile.name)
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -58,7 +58,7 @@ async def change_surname(clbck: CallbackQuery, state: FSMContext):
     """
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
-    await state.set_state(StateUserProfile.change_surname)
+    await state.set_state(StateUserProfile.surname)
 
 
 @router.callback_query(F.data == "change_patronymic")
@@ -66,7 +66,7 @@ async def change_patronymic(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения отчество.
     """
-    await state.set_state(StateUserProfile.change_patronymic)
+    await state.set_state(StateUserProfile.patronymic)
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -76,7 +76,7 @@ async def change_date_birth(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения даты рождения.
     """
-    await state.set_state(StateUserProfile.change_date_birth)
+    await state.set_state(StateUserProfile.date_birth)
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -86,7 +86,7 @@ async def change_gender(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения пола.
     """
-    await state.set_state(StateUserProfile.change_gender)
+    await state.set_state(StateUserProfile.gender)
     await clbck.message.answer(text.update_gender,
                                reply_markup=kb_user_profile.choose_gender(text.update_profile_enter_data))
 
@@ -96,7 +96,7 @@ async def change_height(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения роста.
     """
-    await state.set_state(StateUserProfile.change_height)
+    await state.set_state(StateUserProfile.height)
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -106,7 +106,7 @@ async def change_weight(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения веса.
     """
-    await state.set_state(StateUserProfile.change_weight)
+    await state.set_state(StateUserProfile.weight)
     await clbck.message.answer(text.update_profile_enter_data,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -116,7 +116,7 @@ async def change_email(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения электронной почты.
     """
-    await state.set_state(StateUserProfile.change_email)
+    await state.set_state(StateUserProfile.email)
     await clbck.message.answer(text.update_email,
                                reply_markup=kb_user_profile.back_button(text.update_profile_enter_data))
 
@@ -126,7 +126,7 @@ async def change_phone(clbck: CallbackQuery, state: FSMContext):
     """
     Колбэк изменения номера телефона.
     """
-    await state.set_state(StateUserProfile.change_phone)
+    await state.set_state(StateUserProfile.phone)
     await clbck.message.answer(text.update_phone,
                                reply_markup=kb_user_profile.choose_phone(text.update_profile_enter_data))
 
@@ -136,7 +136,7 @@ async def change_communication_channels(clbck: CallbackQuery, state: FSMContext)
     """
     Колбэк изменения канала связи.
     """
-    await state.set_state(StateUserProfile.change_communication_channels)
+    await state.set_state(StateUserProfile.communication_channels)
     await clbck.message.answer(text.update_communication_channels,
                                reply_markup=kb_user_profile.choose_communication_channels(
                                    text.update_profile_enter_data))

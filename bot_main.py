@@ -23,28 +23,29 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram_sqlite_storage.sqlitestore import SQLStorage
 from aiogram.utils.chat_action import ChatActionMiddleware
 
 from data import models_peewee, text_user_profile
-from config.config import BOT_TOKEN, API_URL_OPEN_WEATHER_DAY
+from config.config import BOT_TOKEN
 from handlers import commands, messages
-from state_commands import menu_other_states, user_account_states
+from state_commands import menu_other_states, user_profile_basic_data
 
 
 async def main():
-    f = text_user_profile.question_for_profile
-    bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.HTML)
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
-    dp = Dispatcher(storage=MemoryStorage())
+    dp = Dispatcher(storage=SQLStorage("data/database.db"))
     dp.message.middleware(ChatActionMiddleware())
 
     dp.include_router(messages.router)
     dp.include_router(commands.router)
 
     dp.include_router(menu_other_states.router)
-    dp.include_router(user_account_states.router)
+    dp.include_router(user_profile_basic_data.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())

@@ -21,16 +21,16 @@ class StateUserProfile(StatesGroup):
 
 
 class StateUserProfileBasicData(StatesGroup):
-    change_name = State()
-    change_surname = State()
-    change_patronymic = State()
-    change_date_birth = State()
-    change_gender = State()
-    change_height = State()
-    change_weight = State()
-    change_email = State()
-    change_phone = State()
-    change_communication_channels = State()
+    name = State()
+    surname = State()
+    patronymic = State()
+    date_birth = State()
+    gender = State()
+    height = State()
+    weight = State()
+    email = State()
+    phone = State()
+    communication_channels = State()
     clear_profile = State()
 
 

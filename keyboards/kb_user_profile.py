@@ -24,6 +24,8 @@ from data.models_peewee import Gender, ChannelCom, db_beahea
 def main_menu() -> ReplyKeyboardMarkup:
     menu_buttons = [
         [KeyboardButton(text="Телеграм-канал"),
+         KeyboardButton(text="Частный канал")],
+        [KeyboardButton(text="Марафон"),
          KeyboardButton(text="👤 Профиль")]
     ]
     menu_keyboard = ReplyKeyboardMarkup(keyboard=menu_buttons,
@@ -94,7 +96,7 @@ def choose_gender(prompt) -> ReplyKeyboardMarkup:
     return button_gender_keyboard
 
 
-def user_profile(user_id, prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
+def user_profile(prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
     buttons_questions_menu = []
     for datas in text_user_profile.question_for_profile.values():
         buttons_questions_menu.append([KeyboardButton(text=datas[0])])
@@ -107,14 +109,14 @@ def user_profile(user_id, prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
 
 
 def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
-    user_data = db_funcs_user_account.user_get_data(user_id=user_id)
-    if user_data is None:
+    user_profile_basic_data = db_funcs_user_account.user_get_data(user_id=user_id, name_data='user_profile_basic_data')
+    if user_profile_basic_data is None:
         logging.error(f'Не найдет профиль {user_id}')
         user_profile_buttons = [
             [KeyboardButton(text="Что-то пошло не так, аккаунт не найден")]]
     else:
         user_profile_buttons = [[], [], []]
-        filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_data)
+        filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_profile_basic_data)
         for key, value in filter_user_datas.items():
             if key in ['name', 'surname', 'patronymic']:
                 user_profile_buttons[0].append(KeyboardButton(text=filter_user_datas[key]))
@@ -127,16 +129,3 @@ def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
                                                 resize_keyboard=True,
                                                 input_field_placeholder='Выберите соответствующую кнопку.')
     return user_profile_keyboard
-
-
-def user_redactor_question_for_profile(user_id, prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
-
-    redactor_question_buttons = [
-        [KeyboardButton(text="Посмотреть ответы"), KeyboardButton(text="Редактировать ответы")],
-        [KeyboardButton(text='Назад')]
-    ]
-    redactor_question_keyboard = ReplyKeyboardMarkup(keyboard=redactor_question_buttons,
-                                                     resize_keyboard=True,
-                                                     input_field_placeholder=prompt)
-    return redactor_question_keyboard
-
