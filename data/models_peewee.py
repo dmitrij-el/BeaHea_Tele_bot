@@ -56,6 +56,7 @@ def create_models() -> None:
 
 
 db_beahea = SqliteDatabase('./data/database.db')
+db_beahea = SqliteDatabase('C:/Users/dblmo/PycharmProjects/BeaHea_Tele_bot/data/database.db')
 
 
 class BaseUserModel(Model):
@@ -97,8 +98,6 @@ class User(BaseUserModel):
     is_active = BooleanField(default=True)
     user_id = CharField(unique=True)
     state_now = CharField(null=True)
-
-
 
     class Meta:
         db_table = "user"

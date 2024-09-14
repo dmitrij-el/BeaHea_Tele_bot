@@ -1,7 +1,7 @@
 import pymorphy3
 import re
 
-from data import text, models_peewee
+from data import text, text_user_profile, models_peewee
 from data.models_peewee import Gender, ChannelCom, db_beahea
 
 
@@ -86,34 +86,58 @@ def text_buttons_profile(user_data: models_peewee.BaseUserModel) -> dict:
     return user_data_dict
 
 
-def check_data_func(electoral: str | int, mess: str) -> [bool, str]:
+def check_data_func(key: str | int, mess: str) -> [bool, str]:
     """
     Функция проверки ввода данных аккаунта
 
-    :param electoral: Название метода проверки
+    :param key: Название метода проверки
     
     :param mess: Текстовое сообщение для проверки на соответствие
 
     :return: Объект с информацией о результате проверки
     """
 
-    if electoral in ['name', 'surname', 'patronymic']:
+    if key in ['name', 'surname', 'patronymic']:
         if len(mess) > 63:
-            return False, text.err_change_name
-    elif electoral == 'date_birth':
-        return checking_data_expression(date_birth=mess), text.err_change_date_birth
-    elif electoral == 'height':
-        print(mess)
+            return (False,
+                    text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'date_birth':
+        return (checking_data_expression(date_birth=mess),
+                text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'height':
         if int(mess) > 300 or int(mess) < 1:
-            return False, text.err_change_height
-    elif electoral == 'weight':
+            return (False,
+                    text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'weight':
         if int(mess) < 1 or int(mess) > 300:
-            return False, text.err_change_weight
-    elif electoral == 'email':
-        return checking_data_expression(email=mess), text.err_change_email
-    elif electoral == 'phone':
-        return checking_data_expression(phone_number=mess), text.err_change_phone
+            return (False,
+                    text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'email':
+        return (checking_data_expression(email=mess),
+                text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'phone':
+        return (checking_data_expression(phone_number=mess),
+                text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'communication_channels':
+        ans_list = [[i.name, i.symbol] for i in ChannelCom.select(ChannelCom.name, ChannelCom.symbol)]
+        answer_list = []
+        for ans in ans_list:
+            for i in ans:
+                answer_list.append(i)
+        if not mess.title() in answer_list:
+            return (False,
+                    text_user_profile.account_basic_data['err_basic_data_update'][key])
+    elif key == 'gender':
+        ans_list = [[i.name, i.symbol] for i in Gender.select(Gender.name, Gender.symbol)]
+        answer_list = []
+        for ans in ans_list:
+            for i in ans:
+                answer_list.append(i)
+        if not mess.title() in answer_list:
+            return (False,
+                    text_user_profile.account_basic_data['err_basic_data_update'][key])
     return True, text.update_account_true
+
 
 
 def checking_data_expression(phone_number: str | bool = False,

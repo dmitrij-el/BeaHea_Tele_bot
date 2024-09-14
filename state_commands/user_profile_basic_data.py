@@ -7,6 +7,8 @@ from aiogram import Router
 from aiogram import flags
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
+from aiogram.filters import Filter
+
 
 from data import db_funcs_user_account, text, text_user_profile
 from data.models_peewee import User, Gender, ChannelCom, UserProfileBasicData
@@ -20,7 +22,22 @@ from states.states import (StateMenu,
 from state_commands.menu_other_states import delete_msgs
 from utils import easy_funcs
 
+
 router = Router()
+
+
+class ProfileStateFilter(Filter):
+    async def __call__(self, message: Message, state: FSMContext) -> bool:
+        current_state = await state.get_state()
+        return current_state in [
+            StateUserProfileBasicData.name,
+            StateUserProfileBasicData.surname,
+            StateUserProfileBasicData.patronymic,
+            StateUserProfileBasicData.date_birth,
+            StateUserProfileBasicData.height,
+            StateUserProfileBasicData.weight,
+            StateUserProfileBasicData.email
+        ]
 
 
 def find_column_name_by_value(model_instance, search_value):
@@ -38,15 +55,20 @@ def find_column_name_by_value(model_instance, search_value):
 
 
 @router.message(StateUserProfile.the_basic_data)
-async def clear_profile(msg: Message, state: FSMContext):
+async def the_basic_data(msg: Message, state: FSMContext):
+    """
+
+
+    """
 
     prompt = msg.text
     user_id = msg.from_user.id
     the_basic_data = UserProfileBasicData.select().where(UserProfileBasicData.user_id == user_id).get()
     res = find_column_name_by_value(the_basic_data, prompt)
-    if res in text_user_profile.account_basic_data['basic_data'].keys():
-        await state.set_state(state=text_user_profile.account_basic_data['basic_data'][res][1])
-        await msg.answer(text=text_user_profile.account_basic_data['basic_data'][res][2])
+    if res in text_user_profile.account_basic_data['basic_data_menu'].keys():
+        await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][res])
+        await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][res],
+                         reply_markup=kb_user_profile.back_button())
     elif prompt == 'Назад':
         await state.set_state(state=StateMenu.profile)
         await msg.answer(text=text_user_profile.question_for_profile['the_basic_data'][1],
@@ -55,9 +77,12 @@ async def clear_profile(msg: Message, state: FSMContext):
         await state.set_state(state=StateMenu.menu)
         await msg.answer(text=text.menu,
                          reply_markup=kb_user_profile.main_menu())
-    for val in text_user_profile.account_basic_data['basic_data'].values():
-        if val[0] == prompt:
-            await state.set_state(state=val[1])
+    else:
+        for key, val in text_user_profile.account_basic_data['basic_data_menu'].items():
+            if val == prompt:
+                await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][key])
+                await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                                 reply_markup=kb_user_profile.back_button())
 
 
 @router.message(StateUserProfileBasicData.clear_profile)
@@ -85,18 +110,12 @@ async def clear_profile(msg: Message, state: FSMContext):
         await msg.answer(text=text.menu, reply_markup=kb_user_profile.main_menu())
 
 
-@router.message(StateUserProfileBasicData.name,
-                StateUserProfileBasicData.surname,
-                StateUserProfileBasicData.patronymic,
-                StateUserProfileBasicData.date_birth,
-                StateUserProfileBasicData.height,
-                StateUserProfileBasicData.weight,
-                StateUserProfileBasicData.email)
+@router.message(ProfileStateFilter())
 @flags.chat_action("typing")
 async def change_name(msg: Message, state: FSMContext):
-    """Изменение имени"""
+    """Изменение имени, фамилии, отчества, даты рождения, веса, пола, роста, имейла"""
     prompt = msg.text
-    if prompt == 'Назад':
+    if prompt == 'Отмена':
         await state.set_state(state=StateUserProfile.the_basic_data)
         await msg.answer(text=text_user_profile.account_basic_data,
                          reply_markup=kb_user_profile.user_profile_basic_data(user_id=msg.from_user.id))
@@ -106,13 +125,23 @@ async def change_name(msg: Message, state: FSMContext):
                          reply_markup=kb_user_profile.main_menu())
     else:
         for key, value in text_user_profile.account_basic_data['basic_data_states'].items():
-            if value == state.get_state():
-                (UserProfileBasicData.update({key: prompt}).
-                 where(UserProfileBasicData.user_id==msg.from_user.id))
-      ############
-        ##########
-    ###########
-    ###########
+            if value == await state.get_state():
+                check = easy_funcs.check_data_func(key, prompt)
+                if check:
+
+                    check_data = UserProfileBasicData.update({key: prompt}).where(UserProfileBasicData.user_id == msg.from_user.id)
+                    check_data.execute()
+                    await msg.answer(text=text_user_profile.account_basic_data['update_account_true'],
+                                     reply_markup=kb_user_profile.user_profile_basic_data(user_id=msg.from_user.id))
+                    await state.set_state(StateUserProfile.the_basic_data)
+                    break
+                else:
+                    return await msg.answer(text=text_user_profile.account_basic_data['err_basic_data_update'][key])
+        else:
+            await msg.answer(text=text.err_reg_fatal,
+                             reply_markup=kb_user_profile.main_menu())
+            await state.set_state(StateMenu.menu)
+
 
 @router.message(StateUserProfileBasicData.gender)
 @flags.chat_action("typing")

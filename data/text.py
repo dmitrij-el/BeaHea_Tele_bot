@@ -8,7 +8,6 @@ menu = "📍 Главное меню"
 go_to_telegram_channel = """Посетите мой публичный телеграм-канал. Там много интересного."""
 go_to_point_menu = 'В данном разделе хранятся все ваши данные. Для перехода выберите соответствующий пункт меню'
 
-
 account_menu_1 = 'Ваш профиль.'
 account_menu_2 = 'Для изменения нажмите на соответствующую кнопку'
 account_qst_clear = 'У вас уже есть профиль, хотите его очистить?'
@@ -27,8 +26,20 @@ update_communication_channels = 'Выберите предпочтительны
 update_phone = 'Поделитесь своим контактом или введите номер телефона вручную.'
 update_email = 'Введите email.'
 
-
 err = "🚫 К сожалению произошла ошибка, попробуйте позже"
 err_command = 'Неверная команда. Потом надо че-нить написать для помощи, а пока мне в падлу 😎'
 err_reg_fatal = """Произошла критическая ошибка при регистрации. Уведомите пожалуйста администратора.
 Следующее сообщение будет отправлено администратору."""
+
+from states.states import StateUserProfileBasicData
+
+name = StateUserProfileBasicData.name,
+surname = StateUserProfileBasicData.surname,
+patronymic = StateUserProfileBasicData.patronymic,
+date_birth = StateUserProfileBasicData.date_birth,
+gender = StateUserProfileBasicData.gender,
+height = StateUserProfileBasicData.height,
+weight = StateUserProfileBasicData.weight,
+email = StateUserProfileBasicData.email,
+phone = StateUserProfileBasicData.phone,
+communication_channel = StateUserProfileBasicData.communication_channels

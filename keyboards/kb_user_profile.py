@@ -51,11 +51,10 @@ def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
     return choice_delete_account_keyboard
 
 
-def back_button(prompt) -> ReplyKeyboardMarkup:
+def back_button() -> ReplyKeyboardMarkup:
     back_button_buttons = [[KeyboardButton(text="Отмена")]]
     back_button_keyboard = ReplyKeyboardMarkup(keyboard=back_button_buttons,
-                                               resize_keyboard=True,
-                                               input_field_placeholder=prompt)
+                                               resize_keyboard=True)
     return back_button_keyboard
 
 
@@ -115,7 +114,7 @@ def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
         user_profile_buttons = [
             [KeyboardButton(text="Что-то пошло не так, аккаунт не найден")]]
     else:
-        user_profile_buttons = [[], [], []]
+        user_profile_buttons = [[], [], [], []]
         filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_profile_basic_data)
         for key, value in filter_user_datas.items():
             if key in ['name', 'surname', 'patronymic']:
@@ -124,7 +123,7 @@ def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
                 user_profile_buttons[1].append(KeyboardButton(text=filter_user_datas[key]))
             elif key in ['email', 'phone', 'communication_channels']:
                 user_profile_buttons[2].append(KeyboardButton(text=filter_user_datas[key]))
-
+        user_profile_buttons[3] = [KeyboardButton(text="Главное меню"), KeyboardButton(text="Назад")]
     user_profile_keyboard = ReplyKeyboardMarkup(keyboard=user_profile_buttons,
                                                 resize_keyboard=True,
                                                 input_field_placeholder='Выберите соответствующую кнопку.')

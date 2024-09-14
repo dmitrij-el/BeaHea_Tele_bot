@@ -151,7 +151,7 @@ account_basic_data = dict(
         phone='Телефон',
         comunication_channel='Канал связи'
     ),
-    basic_data_states=dict(
+    basic_data_datas=dict(
         name=UserProfileBasicData.name,
         surname=UserProfileBasicData.surname,
         patronymic=UserProfileBasicData.patronymic,
@@ -175,7 +175,7 @@ account_basic_data = dict(
         phone='Поделитесь своим контактом или введите номер телефона вручную.',
         comunication_channel='Выберите предпочтительный канал связи.'
     ),
-    basic_data_link_datas = dict(
+    basic_data_states = dict(
         name=StateUserProfileBasicData.name,
         surname=StateUserProfileBasicData.surname,
         patronymic=StateUserProfileBasicData.patronymic,
@@ -185,7 +185,7 @@ account_basic_data = dict(
         weight=StateUserProfileBasicData.weight,
         email=StateUserProfileBasicData.email,
         phone=StateUserProfileBasicData.phone,
-        comunication_channel=StateUserProfileBasicData.communication_channels
+        communication_channel=StateUserProfileBasicData.communication_channels
     ),
     err_basic_data_update = dict(
         name = 'Ошибка. Для имени можно использовать любой набор символов менее 64 букв.'

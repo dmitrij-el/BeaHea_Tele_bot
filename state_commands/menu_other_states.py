@@ -63,4 +63,4 @@ async def profile(msg: Message, state: FSMContext):
     else:
         await state.set_state(StateMenu.profile)
         dlt_msg = await msg.answer(text=text.err_command,
-                                   reply_markup=kb_user_profile.user_profile(user_id=msg.from_user.id))
+                                   reply_markup=kb_user_profile.user_profile())
