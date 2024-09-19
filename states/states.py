@@ -10,7 +10,8 @@ class StateMenu(StatesGroup):
     menu = State()
     telegram_channel = State()
     profile = State()
-
+    buy_subscription = State()
+    buy_marathon = State()
 
 class StateUserProfile(StatesGroup):
     the_basic_data = State()

@@ -30,16 +30,3 @@ err = "🚫 К сожалению произошла ошибка, попроб�
 err_command = 'Неверная команда. Потом надо че-нить написать для помощи, а пока мне в падлу 😎'
 err_reg_fatal = """Произошла критическая ошибка при регистрации. Уведомите пожалуйста администратора.
 Следующее сообщение будет отправлено администратору."""
-
-from states.states import StateUserProfileBasicData
-
-name = StateUserProfileBasicData.name,
-surname = StateUserProfileBasicData.surname,
-patronymic = StateUserProfileBasicData.patronymic,
-date_birth = StateUserProfileBasicData.date_birth,
-gender = StateUserProfileBasicData.gender,
-height = StateUserProfileBasicData.height,
-weight = StateUserProfileBasicData.weight,
-email = StateUserProfileBasicData.email,
-phone = StateUserProfileBasicData.phone,
-communication_channel = StateUserProfileBasicData.communication_channels

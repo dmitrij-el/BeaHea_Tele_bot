@@ -97,7 +97,13 @@ class User(BaseUserModel):
     creation_time = DateTimeField(default=datetime.datetime.now)
     is_active = BooleanField(default=True)
     user_id = CharField(unique=True)
-    state_now = CharField(null=True)
+    subscribe_marathon = BooleanField(default=False)
+    date_subscribe_marathon = DateTimeField(null=True)
+    date_end_subscribe_marathon = DateTimeField(null=True)
+    subscribe_on_private_channel = BooleanField(default=False)
+    date_subscribe_on_private_channel = DateTimeField(null=True)
+    date_end_subscribe_on_private_channel = DateTimeField(null=True)
+
 
     class Meta:
         db_table = "user"

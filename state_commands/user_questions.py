@@ -6,7 +6,7 @@ from aiogram import flags
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from keyboards import kb_user_questions
+from keyboards import kb_user_questions, kb_user_profile, kb_main_menu
 from data import text, text_user_profile
 from states.states import (StateMenu,
                            StateUserProfile,

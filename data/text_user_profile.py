@@ -155,7 +155,7 @@ account_basic_data = dict(
         name=UserProfileBasicData.name,
         surname=UserProfileBasicData.surname,
         patronymic=UserProfileBasicData.patronymic,
-        date_birth= UserProfileBasicData.date_birth,
+        date_birth=UserProfileBasicData.date_birth,
         gender=UserProfileBasicData.gender,
         height=UserProfileBasicData.height,
         weight=UserProfileBasicData.weight,
@@ -163,23 +163,23 @@ account_basic_data = dict(
         phone=UserProfileBasicData.phone,
         comunication_channel=UserProfileBasicData.communication_channels
     ),
-    basic_data_update = dict(
+    basic_data_update=dict(
         name='Введите ваше имя.',
         surname='Введите вашу фамилию.',
         patronymic='Ваше отчество, если нету оставьте поле пустым.',
         date_birth='Введите дату рождения в формате ДД.ММ.ГГГГ или ДД/ММ/ГГГГ.',
-        gender = 'Выберите ваш пол.',
+        gender='Выберите ваш пол.',
         height='Рост в сантиметрах',
         weight='Вес в килограммах',
         email='Введите email.',
         phone='Поделитесь своим контактом или введите номер телефона вручную.',
         comunication_channel='Выберите предпочтительный канал связи.'
     ),
-    basic_data_states = dict(
+    basic_data_states=dict(
         name=StateUserProfileBasicData.name,
         surname=StateUserProfileBasicData.surname,
         patronymic=StateUserProfileBasicData.patronymic,
-        date_birth= StateUserProfileBasicData.date_birth,
+        date_birth=StateUserProfileBasicData.date_birth,
         gender=StateUserProfileBasicData.gender,
         height=StateUserProfileBasicData.height,
         weight=StateUserProfileBasicData.weight,
@@ -187,30 +187,42 @@ account_basic_data = dict(
         phone=StateUserProfileBasicData.phone,
         communication_channel=StateUserProfileBasicData.communication_channels
     ),
-    err_basic_data_update = dict(
-        name = 'Ошибка. Для имени можно использовать любой набор символов менее 64 букв.'
-                          + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        date_birth = 'Ошибка. Дата рождения в формате ДД.ММ.ГГГГ или ДД/ММ/ГГГГ.'
-                                + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        gender = ('Ошибка. Для выбора пола воспользуйтесь кнопками ниже, или введите: '
-                             '\n"men" - мужской, '
-                             '\n"woman" - женский'
-                             + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.'
-                             ),
-        height = 'Ошибка. Укажите рост в сантиметрах.'
-                            + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        weight = 'Ошибка. Укажите вес в килограммах.'
-                            + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        email = 'Ошибка. Формат адреса электронной почты user@host.domain' + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        phone = 'Ошибка. Некорректный номер телефона'
-                           + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        communication_channels = ('Ошибка. Для выбора пола воспользуйтесь кнопками ниже, или введите: '
-                                             '\n"telegram" - Telegram'
-                                             '\n"discord" - Дискорд'
-                                             '\n"email" - Почта'
-                                             '\n"phone" - Мобильная связь'
-                                             + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.'
-                                             )
+    # basic_data_kb=dict(
+    #     name=kb_user_profile.back_button(),
+    #     surname=kb_user_profile.back_button(),
+    #     patronymic=kb_user_profile.back_button(),
+    #     date_birth=kb_user_profile.back_button(),
+    #     gender=kb_user_profile.choose_gender(),
+    #     height=kb_user_profile.back_button(),
+    #     weight=kb_user_profile.back_button(),
+    #     email=kb_user_profile.back_button(),
+    #     phone=kb_user_profile.choose_phone(),
+    #     communication_channel=kb_user_profile.choose_communication_channels()
+    # ),
+    err_basic_data_update=dict(
+        name='Ошибка. Для имени можно использовать любой набор символов менее 64 букв.'
+             + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        date_birth='Ошибка. Дата рождения в формате ДД.ММ.ГГГГ или ДД/ММ/ГГГГ.'
+                   + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        gender=('Ошибка. Для выбора пола воспользуйтесь кнопками ниже, или введите: '
+                '\n"men" - мужской, '
+                '\n"woman" - женский'
+                + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.'
+                ),
+        height='Ошибка. Укажите рост в сантиметрах.'
+               + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        weight='Ошибка. Укажите вес в килограммах.'
+               + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        email='Ошибка. Формат адреса электронной почты user@host.domain' + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        phone='Ошибка. Некорректный номер телефона'
+              + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        communication_channels=('Ошибка. Для выбора пола воспользуйтесь кнопками ниже, или введите: '
+                                '\n"telegram" - Telegram'
+                                '\n"discord" - Дискорд'
+                                '\n"email" - Почта'
+                                '\n"phone" - Мобильная связь'
+                                + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.'
+                                )
     ),
     account_menu_1='Ваш профиль.',
     account_menu_2='Для изменения нажмите на соответствующую кнопку.',

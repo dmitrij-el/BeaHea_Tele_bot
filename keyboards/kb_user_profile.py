@@ -21,27 +21,6 @@ from utils import easy_funcs
 from data.models_peewee import Gender, ChannelCom, db_beahea
 
 
-def main_menu() -> ReplyKeyboardMarkup:
-    menu_buttons = [
-        [KeyboardButton(text="Телеграм-канал"),
-         KeyboardButton(text="Частный канал")],
-        [KeyboardButton(text="Марафон"),
-         KeyboardButton(text="👤 Профиль")]
-    ]
-    menu_keyboard = ReplyKeyboardMarkup(keyboard=menu_buttons,
-                                        resize_keyboard=True,
-                                        input_field_placeholder='Выберите соответствующую кнопку.')
-    return menu_keyboard
-
-
-def go_to_telegram_channel() -> InlineKeyboardMarkup:
-    telegram_channel_buttons = [
-        [InlineKeyboardButton(text='Эля, Еда и Гантеля.', url='t.me/beahea_public')]
-    ]
-    telegram_channel_keyboard = InlineKeyboardMarkup(inline_keyboard=telegram_channel_buttons)
-    return telegram_channel_keyboard
-
-
 def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
     choice_delete_account_buttons = [[KeyboardButton(text="Да"),
                                       KeyboardButton(text="Нет")]]
@@ -49,50 +28,6 @@ def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
                                                          resize_keyboard=True,
                                                          input_field_placeholder=prompt)
     return choice_delete_account_keyboard
-
-
-def back_button() -> ReplyKeyboardMarkup:
-    back_button_buttons = [[KeyboardButton(text="Отмена")]]
-    back_button_keyboard = ReplyKeyboardMarkup(keyboard=back_button_buttons,
-                                               resize_keyboard=True)
-    return back_button_keyboard
-
-
-def choose_phone(prompt) -> ReplyKeyboardMarkup:
-    choose_phone_buttons = [[KeyboardButton(text="📞 Отправить телефон", request_contact=True),
-                             KeyboardButton(text="Отмена")]]
-    choose_phone_keyboard = ReplyKeyboardMarkup(keyboard=choose_phone_buttons,
-                                                resize_keyboard=True,
-                                                input_field_placeholder=prompt)
-    return choose_phone_keyboard
-
-
-def choose_communication_channels(prompt) -> ReplyKeyboardMarkup:
-    button_channels = [[]]
-    with db_beahea:
-        channels = ChannelCom.select()
-        for channel in channels:
-            button_channels[0].append(KeyboardButton(text=channel.name))
-    button_channels.append([KeyboardButton(text='Отмена')])
-
-    button_channels = ReplyKeyboardMarkup(keyboard=button_channels,
-                                          resize_keyboard=True,
-                                          input_field_placeholder=prompt)
-    return button_channels
-
-
-def choose_gender(prompt) -> ReplyKeyboardMarkup:
-    button_gender = [[]]
-    with db_beahea:
-        genders = Gender.select()
-        for gender in genders:
-            button_gender[0].append(KeyboardButton(text=gender.symbol))
-    button_gender.append([KeyboardButton(text='Отмена')])
-
-    button_gender_keyboard = ReplyKeyboardMarkup(keyboard=button_gender,
-                                                 resize_keyboard=True,
-                                                 input_field_placeholder=prompt)
-    return button_gender_keyboard
 
 
 def user_profile(prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
@@ -128,3 +63,45 @@ def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
                                                 resize_keyboard=True,
                                                 input_field_placeholder='Выберите соответствующую кнопку.')
     return user_profile_keyboard
+
+
+def back_button() -> ReplyKeyboardMarkup:
+    back_button_buttons = [[KeyboardButton(text="Отмена")]]
+    back_button_keyboard = ReplyKeyboardMarkup(keyboard=back_button_buttons,
+                                               resize_keyboard=True)
+    return back_button_keyboard
+
+
+def choose_phone() -> ReplyKeyboardMarkup:
+    choose_phone_buttons = [[KeyboardButton(text="📞 Отправить телефон", request_contact=True),
+                             KeyboardButton(text="Отмена")]]
+    choose_phone_keyboard = ReplyKeyboardMarkup(keyboard=choose_phone_buttons,
+                                                resize_keyboard=True)
+    return choose_phone_keyboard
+
+
+def choose_communication_channels() -> ReplyKeyboardMarkup:
+    button_channels = [[]]
+    with db_beahea:
+        channels = ChannelCom.select()
+        for channel in channels:
+            button_channels[0].append(KeyboardButton(text=channel.name))
+    button_channels.append([KeyboardButton(text='Отмена')])
+
+    button_channels = ReplyKeyboardMarkup(keyboard=button_channels,
+                                          resize_keyboard=True)
+    return button_channels
+
+
+def choose_gender() -> ReplyKeyboardMarkup:
+    button_gender = [[]]
+    with db_beahea:
+        genders = Gender.select()
+        for gender in genders:
+            button_gender[0].append(KeyboardButton(text=gender.symbol))
+    button_gender.append([KeyboardButton(text='Отмена')])
+
+    button_gender_keyboard = ReplyKeyboardMarkup(keyboard=button_gender,
+                                                 resize_keyboard=True
+                                                 )
+    return button_gender_keyboard
