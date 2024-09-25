@@ -53,14 +53,24 @@ async def the_basic_data(msg: Message, state: FSMContext):
 
     """
 
-    prompt = msg.text
+    prompt = str(msg.text)
     user_id = msg.from_user.id
-    the_basic_data = UserProfileBasicData.select().where(UserProfileBasicData.user_id == user_id).get()
-    res = find_column_name_by_value(the_basic_data, prompt)
-    if res in text_user_profile.account_basic_data['basic_data_menu'].keys():
-        await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][res])
-        await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][res],
-                         reply_markup=text_user_profile.account_basic_data['basic_data_kb'][res])
+    basic_data = UserProfileBasicData.select().where(UserProfileBasicData.user_id == user_id).get()
+    key = find_column_name_by_value(basic_data, prompt)
+    if key in text_user_profile.account_basic_data['basic_data_menu'].keys():
+        await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][key])
+        if key == 'gender':
+            await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                             reply_markup=kb_user_profile.choose_gender())
+        elif key == 'phone':
+            await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                             reply_markup=kb_user_profile.choose_phone())
+        elif key == 'communication_channel':
+            await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                             reply_markup=kb_user_profile.choose_phone())
+        else:
+            await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                             reply_markup=kb_user_profile.back_button())
     elif prompt == 'Назад':
         await state.set_state(state=StateMenu.profile)
         await msg.answer(text=text_user_profile.question_for_profile['the_basic_data'][1],
@@ -73,18 +83,29 @@ async def the_basic_data(msg: Message, state: FSMContext):
         for key, val in text_user_profile.account_basic_data['basic_data_menu'].items():
             if val == prompt:
                 await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][key])
-                await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
-                                 reply_markup=text_user_profile.account_basic_data['basic_data_kb'][key])
+                await state.set_state(state=text_user_profile.account_basic_data['basic_data_states'][key])
+                if key == 'gender':
+                    await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                                     reply_markup=kb_user_profile.choose_gender())
+                elif key == 'phone':
+                    await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                                     reply_markup=kb_user_profile.choose_phone())
+                elif key == 'communication_channel':
+                    await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                                     reply_markup=kb_user_profile.choose_phone())
+                else:
+                    await msg.answer(text=text_user_profile.account_basic_data['basic_data_update'][key],
+                                     reply_markup=kb_user_profile.back_button())
 
 
 @router.message(ProfileStateFilter())
 @flags.chat_action("typing")
 async def change_name(msg: Message, state: FSMContext):
     """Изменение имени, фамилии, отчества, даты рождения, веса, пола, роста, имейла"""
-    prompt = msg.text
+    prompt = str(msg.text)
     if prompt == 'Отмена':
         await state.set_state(state=StateUserProfile.the_basic_data)
-        await msg.answer(text=text_user_profile.account_basic_data,
+        await msg.answer(text=text_user_profile.account_basic_data['account_menu_2'],
                          reply_markup=kb_user_profile.user_profile_basic_data(user_id=msg.from_user.id))
     elif prompt == 'Главное меню':
         await state.set_state(state=StateMenu.menu)
@@ -142,7 +163,6 @@ async def change_phone(msg: Message):
     """Изменение номера телефона"""
     prompt = msg.text
     contact = msg.contact
-    print(contact)
     if prompt:
         pass
     elif contact:
@@ -154,14 +174,16 @@ async def change_phone(msg: Message):
 
 @router.message(StateUserProfileBasicData.communication_channels)
 @flags.chat_action("typing")
-async def change_channel(msg: Message):
+async def change_channel(msg: Message, state: FSMContext):
     """Изменение канала связи"""
     prompt = msg.text
+    list_channels = ChannelCom.select().get()
+    print(list_channels)
     if prompt == 'Отмена':
-        await msg.answer(text.update_account_cancel, reply_markup=kb_user_profile.ReplyKeyboardRemove())
-        await msg.answer(text=text.account_menu_2,
+        await msg.answer(text=text.update_account_cancel,
                          reply_markup=kb_user_profile.user_profile())
-    else:
+        await state.set_state(StateUserProfile.the_basic_data)
+    elif prompt in list_channels:
         mess = await msg.answer(text.update_profile_wait)
         user = User.select().where(User.user_id == msg.from_user.id).get()
         channels = ChannelCom.select()

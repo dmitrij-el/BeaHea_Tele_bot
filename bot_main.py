@@ -22,7 +22,7 @@ utils - работа с API и другой функционал бота
 import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -32,7 +32,8 @@ from aiogram.utils.chat_action import ChatActionMiddleware
 from data import models_peewee, text_user_profile
 from config.config import BOT_TOKEN
 from handlers import commands, messages
-from state_commands import menu_other_states, user_profile_basic_data
+from state_commands import menu_other_states, user_profile_basic_data, user_questions
+from pay import paid_features
 
 
 async def main():
@@ -46,6 +47,10 @@ async def main():
 
     dp.include_router(menu_other_states.router)
     dp.include_router(user_profile_basic_data.router)
+    dp.include_router(user_questions.router)
+
+    dp.include_router(paid_features.router)
+    dp.message.register(paid_features.process_successful_payment, F.successful_payment)
 
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())

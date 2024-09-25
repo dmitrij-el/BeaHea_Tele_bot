@@ -51,7 +51,7 @@ list_the_limits_factors = ['question_volume_stress',
                            'question_quality_sleep']
 
 
-@router.message(StateUserProfileQuestionnaire)
+@router.message(StateUserProfileQuestionnaire.question_number_of_meals)
 @flags.chat_action("typing")
 async def profile(msg: Message, state: FSMContext):
     if state.get_state() is StateUserProfileQuestionnaire.question_number_of_meals:
@@ -62,7 +62,7 @@ async def profile(msg: Message, state: FSMContext):
     current_index = list_the_questionnaire_questions.index(current_state_str)
 
 
-@router.message(StateUserProfileGoals)
+@router.message(StateUserProfileGoals.question_reasons_goal)
 @flags.chat_action("typing")
 async def profile(msg: Message, state: FSMContext):
     prompt = msg.text

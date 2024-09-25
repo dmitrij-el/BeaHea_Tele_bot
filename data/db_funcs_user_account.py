@@ -27,12 +27,12 @@ def check_user_datas(user_id: int) -> bool:
 
 def user_get_data(user_id: int, name_data: str) -> BaseUserModel:
     """Подкачка данных пользователя из БД по ключу"""
-    dict_requests = {'user_profile_basic_data': UserProfileBasicData.select().where(user_id == user_id),
-                     'user_profile_questionnaire_questions': UserProfileQuestionnaire.select().where(user_id == user_id),
-                     'the_goals_questions': UserProfileGoals.select().where(user_id == user_id),
-                     'the_trane_questions': UserProfileTrain.select().where(user_id == user_id),
-                     'the_limits_factors': UserProfileLimitsFactors.select().where(user_id == user_id)}
     try:
+        dict_requests = {'user_profile_basic_data': UserProfileBasicData.select().where(user_id == user_id),
+                         'user_profile_questionnaire_questions': UserProfileQuestionnaire.select().where(user_id == user_id),
+                         'the_goals_questions': UserProfileGoals.select().where(user_id == user_id),
+                         'the_trane_questions': UserProfileTrain.select().where(user_id == user_id),
+                         'the_limits_factors': UserProfileLimitsFactors.select().where(user_id == user_id)}
         if name_data in list(dict_requests.keys()):
             with db_beahea:
                 user_datas = dict_requests[name_data].get()
@@ -112,20 +112,7 @@ def check_user_profile_questions(user_id: int, question: str) -> bool:
     try:
         with db_beahea:
             answer = UserProfileQuestionnaire.select().where(User.user_id == user_id)
-            print(answer)
             return bool(answer.get())
-    except Exception as exp:
-        logging.error(f'В процессе проверки на наличие {question} произошла ошибка\n'
-                      f'Ошибка: {exp}')
-        return False
-
-
-def rec_state_now(user_id: int, state: FSMContext) -> bool:
-    try:
-        with db_beahea:
-            answer = User.update({'state_now': state}).where(User.user_id == user_id)
-            print(answer)
-            return bool()
     except Exception as exp:
         logging.error(f'В процессе проверки на наличие {question} произошла ошибка\n'
                       f'Ошибка: {exp}')

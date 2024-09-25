@@ -31,10 +31,13 @@ def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
 
 
 def user_profile(prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
-    buttons_questions_menu = []
+    count = 0
+    buttons_questions_menu = [[],[],[]]
     for datas in text_user_profile.question_for_profile.values():
-        buttons_questions_menu.append([KeyboardButton(text=datas[0])])
-    buttons_questions_menu.append([KeyboardButton(text='Главное меню')])
+        line = count // 2
+        buttons_questions_menu[line].append(KeyboardButton(text=datas[0]))
+        count += 1
+    buttons_questions_menu[2].append(KeyboardButton(text='Главное меню'))
 
     buttons_questions_keyboard = ReplyKeyboardMarkup(keyboard=buttons_questions_menu,
                                                      resize_keyboard=True,
@@ -43,21 +46,44 @@ def user_profile(prompt=text.go_to_point_menu) -> ReplyKeyboardMarkup:
 
 
 def user_profile_basic_data(user_id: int) -> ReplyKeyboardMarkup:
-    user_profile_basic_data = db_funcs_user_account.user_get_data(user_id=user_id, name_data='user_profile_basic_data')
-    if user_profile_basic_data is None:
+    """
+    Клавиатура меню "Основных данных" пользователя.
+
+    :param user_id: ID пользователя
+    :return: Клавиатура с данными
+    """
+    profile_basic_data = db_funcs_user_account.user_get_data(user_id=user_id, name_data='user_profile_basic_data')
+    if profile_basic_data is None:
         logging.error(f'Не найдет профиль {user_id}')
         user_profile_buttons = [
             [KeyboardButton(text="Что-то пошло не так, аккаунт не найден")]]
     else:
         user_profile_buttons = [[], [], [], []]
-        filter_user_datas = easy_funcs.text_buttons_profile(user_data=user_profile_basic_data)
-        for key, value in filter_user_datas.items():
+        user_data_dict = profile_basic_data.__dict__['__data__']
+        print(type(user_data_dict))
+        print(user_data_dict)
+
+        ### Здесь остановился. Надо переписать вывод клавиатуры.
+        for key, value in user_data_dict.items():
+            if type(value) is int:
+                user_data_dict[key] = str(value)
+            if value is None:
+                user_data_dict[key] = text_user_profile.account_basic_data['basic_data_menu'][key]
+            else:
+                if key == 'gender':
+                    gender = Gender.get(Gender.id == user_data_dict[key])
+                    user_data_dict['gender'] = gender.symbol
+                elif key == 'communication_channels':
+                    channel = ChannelCom.get(ChannelCom.id == value)
+                    user_data_dict['communication_channels'] = channel.name
+
+        for key, value in user_data_dict.items():
             if key in ['name', 'surname', 'patronymic']:
-                user_profile_buttons[0].append(KeyboardButton(text=filter_user_datas[key]))
+                user_profile_buttons[0].append(KeyboardButton(text=user_data_dict[key]))
             elif key in ['date_birth', 'gender', 'height', 'weight']:
-                user_profile_buttons[1].append(KeyboardButton(text=filter_user_datas[key]))
+                user_profile_buttons[1].append(KeyboardButton(text=user_data_dict[key]))
             elif key in ['email', 'phone', 'communication_channels']:
-                user_profile_buttons[2].append(KeyboardButton(text=filter_user_datas[key]))
+                user_profile_buttons[2].append(KeyboardButton(text=user_data_dict[key]))
         user_profile_buttons[3] = [KeyboardButton(text="Главное меню"), KeyboardButton(text="Назад")]
     user_profile_keyboard = ReplyKeyboardMarkup(keyboard=user_profile_buttons,
                                                 resize_keyboard=True,

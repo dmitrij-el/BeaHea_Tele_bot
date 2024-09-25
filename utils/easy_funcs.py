@@ -38,7 +38,6 @@ def text_buttons_profile(user_data: models_peewee.BaseUserModel) -> dict:
     """
 
     user_data_dict = user_data.__dict__['__data__']
-    print(user_data_dict)
     gender_id = user_data.gender
     genders_id = [gender.id for gender in Gender.select(Gender.id)]
     if gender_id == None:
@@ -96,7 +95,6 @@ def check_data_func(key: str | int, mess: str) -> [bool, str]:
 
     :return: Объект с информацией о результате проверки
     """
-
     if key in ['name', 'surname', 'patronymic']:
         if len(mess) > 63:
             return (False,
@@ -137,7 +135,6 @@ def check_data_func(key: str | int, mess: str) -> [bool, str]:
             return (False,
                     text_user_profile.account_basic_data['err_basic_data_update'][key])
     return True, text.update_account_true
-
 
 
 def checking_data_expression(phone_number: str | bool = False,

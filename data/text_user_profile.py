@@ -149,7 +149,7 @@ account_basic_data = dict(
         weight='Вес',
         email='Email',
         phone='Телефон',
-        comunication_channel='Канал связи'
+        communication_channels='Канал связи'
     ),
     basic_data_datas=dict(
         name=UserProfileBasicData.name,
@@ -161,7 +161,7 @@ account_basic_data = dict(
         weight=UserProfileBasicData.weight,
         email=UserProfileBasicData.email,
         phone=UserProfileBasicData.phone,
-        comunication_channel=UserProfileBasicData.communication_channels
+        communication_channels=UserProfileBasicData.communication_channels
     ),
     basic_data_update=dict(
         name='Введите ваше имя.',
@@ -173,7 +173,7 @@ account_basic_data = dict(
         weight='Вес в килограммах',
         email='Введите email.',
         phone='Поделитесь своим контактом или введите номер телефона вручную.',
-        comunication_channel='Выберите предпочтительный канал связи.'
+        communication_channels='Выберите предпочтительный канал связи.'
     ),
     basic_data_states=dict(
         name=StateUserProfileBasicData.name,
@@ -185,20 +185,8 @@ account_basic_data = dict(
         weight=StateUserProfileBasicData.weight,
         email=StateUserProfileBasicData.email,
         phone=StateUserProfileBasicData.phone,
-        communication_channel=StateUserProfileBasicData.communication_channels
+        communication_channels=StateUserProfileBasicData.communication_channels
     ),
-    # basic_data_kb=dict(
-    #     name=kb_user_profile.back_button(),
-    #     surname=kb_user_profile.back_button(),
-    #     patronymic=kb_user_profile.back_button(),
-    #     date_birth=kb_user_profile.back_button(),
-    #     gender=kb_user_profile.choose_gender(),
-    #     height=kb_user_profile.back_button(),
-    #     weight=kb_user_profile.back_button(),
-    #     email=kb_user_profile.back_button(),
-    #     phone=kb_user_profile.choose_phone(),
-    #     communication_channel=kb_user_profile.choose_communication_channels()
-    # ),
     err_basic_data_update=dict(
         name='Ошибка. Для имени можно использовать любой набор символов менее 64 букв.'
              + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
@@ -213,7 +201,8 @@ account_basic_data = dict(
                + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
         weight='Ошибка. Укажите вес в килограммах.'
                + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
-        email='Ошибка. Формат адреса электронной почты user@host.domain' + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
+        email='Ошибка. Формат адреса электронной почты user@host.domain'
+              + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
         phone='Ошибка. Некорректный номер телефона'
               + '\nЕсли вы считаете что ошибки нету, просим написать администратору в личку.',
         communication_channels=('Ошибка. Для выбора пола воспользуйтесь кнопками ниже, или введите: '

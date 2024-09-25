@@ -6,19 +6,17 @@
 
 """
 
-import logging
-
 from aiogram.types import (
     KeyboardButton,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove
+    ReplyKeyboardMarkup
 )
 
-from data import db_funcs_user_account, text, text_user_profile
+from data import db_funcs_user_account, text, text_user_profile, text_of_paid_service
 from utils import easy_funcs
 from data.models_peewee import Gender, ChannelCom, db_beahea
+from states.states import StateMenu
 
 
 def main_menu() -> ReplyKeyboardMarkup:
@@ -34,28 +32,6 @@ def main_menu() -> ReplyKeyboardMarkup:
     return menu_keyboard
 
 
-def go_to_telegram_channel() -> InlineKeyboardMarkup:
-    telegram_channel_buttons = [
-        [InlineKeyboardButton(text='Эля, Еда и Гантеля.', url='t.me/beahea_public')]
-    ]
-    telegram_channel_keyboard = InlineKeyboardMarkup(inline_keyboard=telegram_channel_buttons)
-    return telegram_channel_keyboard
-
-
-def go_to_private_telegram_channel() -> ReplyKeyboardMarkup:
-    telegram_channel_buttons = [
-        [InlineKeyboardButton(text='Купить подписку на частный канал', url='t.me/beahea_public')]
-    ]
-    telegram_channel_keyboard = InlineKeyboardMarkup(inline_keyboard=telegram_channel_buttons)
-    return telegram_channel_keyboard
-
-
-def go_to_marathon_channel() -> InlineKeyboardMarkup:
-    telegram_channel_buttons = [
-        [InlineKeyboardButton(text='Купить марафон мечты')]
-    ]
-    telegram_channel_keyboard = InlineKeyboardMarkup(inline_keyboard=telegram_channel_buttons)
-    return telegram_channel_keyboard
 
 
 def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
@@ -72,5 +48,3 @@ def back_button() -> ReplyKeyboardMarkup:
     back_button_keyboard = ReplyKeyboardMarkup(keyboard=back_button_buttons,
                                                resize_keyboard=True)
     return back_button_keyboard
-
-

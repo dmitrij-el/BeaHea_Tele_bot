@@ -4,7 +4,7 @@ from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from keyboards import kb_user_profile
+from keyboards import kb_user_profile, kb_main_menu
 from data import db_funcs_user_account, text
 from states.states import StateMenu, StateUserProfile
 
@@ -27,7 +27,7 @@ async def handler_start(msg: Message, state: FSMContext):
     user_id = msg.from_user.id
     user = db_funcs_user_account.check_user_datas(user_id=user_id)
     if user:
-        await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_user_profile.main_menu())
+        await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_main_menu.main_menu())
         await state.set_state(StateMenu.menu)
 
     else:
@@ -39,11 +39,11 @@ async def handler_start(msg: Message, state: FSMContext):
         }
         db_funcs_user_account.user_rec_datas_in_reg(user_id=user_id, acc_dict = acc_dict)
         if db_funcs_user_account.check_user_datas(user_id):
-            await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_user_profile.main_menu())
+            await msg.answer(text=text.greet_cont.format(user_id=user_id), reply_markup=kb_main_menu.main_menu())
         else:
             await msg.answer(text=text.err_reg_fatal)
             prompt = msg.text
-            await msg.answer(text=prompt, reply_markup=kb_user_profile.main_menu())
+            await msg.answer(text=prompt, reply_markup=kb_main_menu.main_menu())
     await state.set_state(StateMenu.menu)
 
 
@@ -55,7 +55,7 @@ async def handler_main_menu(msg: Message, state: FSMContext):
     :param msg: Сообщение от пользователя
     :param state: Состояние бота
     """
-    await msg.answer(text=text.menu, reply_markup=kb_user_profile.main_menu())
+    await msg.answer(text=text.menu, reply_markup=kb_main_menu.main_menu())
     await msg.delete()
     await state.set_state(StateMenu.menu)
 
@@ -74,4 +74,4 @@ async def handler_send_help(msg: Message, state: FSMContext):
 /main_menu - Выводит главное меню.
 /help - Список команд
 """,
-                     reply_markup=kb_user_profile.main_menu())
+                     reply_markup=kb_main_menu.main_menu())

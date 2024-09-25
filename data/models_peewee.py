@@ -55,7 +55,6 @@ def create_models() -> None:
         logging.error(pw)
 
 
-db_beahea = SqliteDatabase('./data/database.db')
 db_beahea = SqliteDatabase('C:/Users/dblmo/PycharmProjects/BeaHea_Tele_bot/data/database.db')
 
 
@@ -104,7 +103,6 @@ class User(BaseUserModel):
     date_subscribe_on_private_channel = DateTimeField(null=True)
     date_end_subscribe_on_private_channel = DateTimeField(null=True)
 
-
     class Meta:
         db_table = "user"
 
@@ -122,8 +120,8 @@ class UserProfileBasicData(BaseUserModel):
     gender = ForeignKeyField(Gender, backref='user', null=True)
     height = IntegerField(null=True)
     weight = IntegerField(null=True)
-    phone = CharField(unique=True, index=True, null=True)
-    email = CharField(unique=True, index=True, null=True)
+    phone = CharField(null=True)
+    email = CharField( null=True)
     communication_channels = ForeignKeyField(ChannelCom, backref='user', null=True)
 
     class Meta:
