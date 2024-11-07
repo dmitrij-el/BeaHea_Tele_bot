@@ -8,38 +8,32 @@
 
 from aiogram.types import (
     KeyboardButton,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
     ReplyKeyboardMarkup
 )
 
-from data import db_funcs_user_account, text, text_user_profile, text_of_paid_service
-from utils import easy_funcs
-from data.models_peewee import Gender, ChannelCom, db_beahea
-from states.states import StateMenu
+from datas.models.models_user import Admin
 
 
-def main_menu() -> ReplyKeyboardMarkup:
+def main_menu(user_id) -> ReplyKeyboardMarkup:
     menu_buttons = [
-        [KeyboardButton(text="Телеграм-канал"),
-         KeyboardButton(text="Частный канал")],
-        [KeyboardButton(text="Марафон"),
-         KeyboardButton(text="👤 Профиль")]
+        [KeyboardButton(text='Телеграм-канал'),
+         KeyboardButton(text='Профиль')],
+        [KeyboardButton(text="Написать Эле")]
     ]
+    if Admin.is_admin(user_id=user_id):
+        menu_buttons.append([KeyboardButton(text="Меню администратора")])
     menu_keyboard = ReplyKeyboardMarkup(keyboard=menu_buttons,
                                         resize_keyboard=True,
                                         input_field_placeholder='Выберите соответствующую кнопку.')
     return menu_keyboard
 
 
-
-
-def choice_delete_account(prompt) -> ReplyKeyboardMarkup:
+def choice_delete_account() -> ReplyKeyboardMarkup:
     choice_delete_account_buttons = [[KeyboardButton(text="Да"),
                                       KeyboardButton(text="Нет")]]
     choice_delete_account_keyboard = ReplyKeyboardMarkup(keyboard=choice_delete_account_buttons,
                                                          resize_keyboard=True,
-                                                         input_field_placeholder=prompt)
+                                                         input_field_placeholder='Очистить аккаунт?')
     return choice_delete_account_keyboard
 
 

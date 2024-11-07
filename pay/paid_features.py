@@ -13,8 +13,8 @@ from aiogram.fsm.context import FSMContext
 
 import states.states
 from config.config import TEST_PAYMENT_TOKEN_YOU_KASSA, TEST_PAYMENT_TOKEN_SBERBANK
-from data import models_peewee, price
-from data.models_peewee import User
+from datas import models, price
+from datas.models.models_setting import User
 from states.states import StateMenu
 from keyboards import kb_main_menu, kb_pay_menu
 

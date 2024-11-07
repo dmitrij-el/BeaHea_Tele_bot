@@ -1,13 +1,10 @@
 from aiogram.types import (
-    KeyboardButton,
     InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    ReplyKeyboardMarkup
+    InlineKeyboardButton
 )
 
-from data import db_funcs_user_account, text, text_user_profile, text_of_paid_service
+from datas.texts import text_of_paid_service
 from utils import easy_funcs
-from data.models_peewee import Gender, ChannelCom, db_beahea
 from states.states import StateMenu
 
 

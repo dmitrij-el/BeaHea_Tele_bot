@@ -1,145 +1,13 @@
-import pymorphy3
 import re
 
-from data import text, text_user_profile, models_peewee
-from data.models_peewee import Gender, ChannelCom, db_beahea
-
-
-def gender_func(*args: list) -> str | None:
-    """
-    Функция принимает данные для определения пола человека с помощью библиотеки pymorphy3
-    :param args: Список с данными для определения пола
-
-    :return: Одно из двух значений (men - мужской пол, women - женский). Если пол не определен, то возвращает None
-    """
-    masc = 0
-    femn = 0
-    for name in args:
-        if name is not None:
-            parsed_word = pymorphy3.MorphAnalyzer().parse(name)[0].tag.gender
-            if parsed_word == "masc":
-                masc += 1
-            elif parsed_word == "femn":
-                femn += 1
-    if masc > femn:
-        return "men"
-    elif masc < femn:
-        return "women"
-    else:
-        return None
-
-
-def text_buttons_profile(user_data: models_peewee.BaseUserModel) -> dict:
-    """
-    Функция для формирования текстового интерфейса клавиатуры в меню профиля
-
-    :param user_data: Вводные данные из базы данных
-    :return: Текстовый интерфейс клавиатуры в меню
-    """
-
-    user_data_dict = user_data.__dict__['__data__']
-    gender_id = user_data.gender
-    genders_id = [gender.id for gender in Gender.select(Gender.id)]
-    if gender_id == None:
-        user_data_dict['gender'] = 'Пол'
-    elif gender_id.id in genders_id:
-        with db_beahea:
-            gender = Gender.get(Gender.id == user_data.gender)
-            gender_symbol = gender.symbol
-            user_data_dict['gender'] = gender_symbol
-
-    if user_data.name == None:
-        user_data_dict['name'] = 'Имя'
-
-    if user_data.surname == None:
-        user_data_dict['surname'] = 'Фамилия'
-
-    if user_data.patronymic == None:
-        user_data_dict['patronymic'] = 'Отчество'
-
-    if user_data.date_birth == None:
-        user_data_dict['date_birth'] = 'Дата рождения'
-
-    if user_data.height == None:
-        user_data_dict['height'] = 'Рост'
-
-    if user_data.weight == None:
-        user_data_dict['weight'] = 'Вес'
-
-    if user_data.email == None:
-        user_data_dict['email'] = 'Email'
-
-    if user_data.phone == None:
-        user_data_dict['phone'] = 'Телефон'
-
-    channel_id = user_data.communication_channels
-    channels_id = [channel.id for channel in ChannelCom.select(ChannelCom.id)]
-    if channel_id == None:
-        user_data_dict['communication_channels'] = 'Канал связи'
-    elif channel_id.id in channels_id:
-        with db_beahea:
-            channel = ChannelCom.get(ChannelCom.id == user_data.communication_channels)
-            channel_name = channel.name
-            user_data_dict['communication_channels'] = channel_name
-
-    return user_data_dict
-
-
-def check_data_func(key: str | int, mess: str) -> [bool, str]:
-    """
-    Функция проверки ввода данных аккаунта
-
-    :param key: Название метода проверки
-    
-    :param mess: Текстовое сообщение для проверки на соответствие
-
-    :return: Объект с информацией о результате проверки
-    """
-    if key in ['name', 'surname', 'patronymic']:
-        if len(mess) > 63:
-            return (False,
-                    text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'date_birth':
-        return (checking_data_expression(date_birth=mess),
-                text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'height':
-        if int(mess) > 300 or int(mess) < 1:
-            return (False,
-                    text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'weight':
-        if int(mess) < 1 or int(mess) > 300:
-            return (False,
-                    text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'email':
-        return (checking_data_expression(email=mess),
-                text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'phone':
-        return (checking_data_expression(phone_number=mess),
-                text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'communication_channels':
-        ans_list = [[i.name, i.symbol] for i in ChannelCom.select(ChannelCom.name, ChannelCom.symbol)]
-        answer_list = []
-        for ans in ans_list:
-            for i in ans:
-                answer_list.append(i)
-        if not mess.title() in answer_list:
-            return (False,
-                    text_user_profile.account_basic_data['err_basic_data_update'][key])
-    elif key == 'gender':
-        ans_list = [[i.name, i.symbol] for i in Gender.select(Gender.name, Gender.symbol)]
-        answer_list = []
-        for ans in ans_list:
-            for i in ans:
-                answer_list.append(i)
-        if not mess.title() in answer_list:
-            return (False,
-                    text_user_profile.account_basic_data['err_basic_data_update'][key])
-    return True, text.update_account_true
-
+from datas.texts import text, text_account_basic_datas
+from datas.models.models_basic_data import Gender, ChannelCom
 
 def checking_data_expression(phone_number: str | bool = False,
                              email: str | bool = False,
-                             date_birth: str | bool = False) -> bool:
+                             date_birth: str | bool = False,
+                             time: str | bool = False,
+                             date_day: str | bool = False) -> bool:
     """
     Проверка данных с помощью регулярных выражений. Выберите переменную из списка\n
     Номера телефона: phone_number\n
@@ -160,6 +28,10 @@ def checking_data_expression(phone_number: str | bool = False,
             r'(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d',
         'phone_number':
             r'^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$',
+        'date':
+            r'(19|20)\d\d[- /.,;:](0[1-9]|1[012])[- /.,;:](0[1-9]|[12][0-9]|3[01])',
+        'time':
+            r'^([0-1]?[0-9]|2[0-3])[:;.-/, ][0-5][0-9]',
         'email':
             r'^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$',
         'number_credit_card':
@@ -177,9 +49,82 @@ def checking_data_expression(phone_number: str | bool = False,
     elif email:
         expression = expressions_dir["email"]
         data = email
+    elif time:
+        expression = expressions_dir["time"]
+        data = time
+    elif date_day:
+        expression = expressions_dir["date"]
+        data = date_day
 
     result = re.compile(expression)
     if result.search(str(data)):
         return True
     else:
         return False
+
+
+def correction_datas(phone_number: str = None,
+                     date_day: str = None,
+                     time: str = None) -> str:
+    if phone_number:
+        ans = ''.join(re.findall(r'\b\d+\b', phone_number))
+        if ans[0] == '7':
+            ans = '+' + ans
+        elif ans[0] == '8':
+            ans = '+7' + ans.lstrip('8')
+        elif ans[0] == '9':
+            ans = '+7' + ans
+        return ans
+    elif date_day:
+        ans = (re.findall(r'\b\d+\b', date_day))
+        if len(ans[-1]) > len(ans[0]):
+            ans[0], ans[-1] = ans[-1], ans[0]
+        ans = '-'.join(ans)
+        return ans
+    elif time:
+        ans = ':'.join(re.findall(r'\b\d+\b', time))
+        return ans
+
+
+def check_data_func(key: str | int, mess: str) -> [bool, str]:
+    """
+    Функция проверки ввода данных аккаунта
+
+    :param key: Название метода проверки
+
+    :param mess: Текстовое сообщение для проверки на соответствие
+
+    :return: Объект с информацией о результате проверки
+    """
+    if key in ['name', 'surname', 'patronymic']:
+        if len(mess) > 63:
+            return (False,
+                    text_account_basic_datas.err_basic_data_update[key])
+    elif key == 'date_birth':
+        return (checking_data_expression(date_birth=mess),
+                text_account_basic_datas.err_basic_data_update[key])
+    elif key == 'email':
+        return (checking_data_expression(email=mess),
+                text_account_basic_datas.err_basic_data_update[key])
+    elif key == 'phone':
+        return (checking_data_expression(phone_number=mess),
+                text_account_basic_datas.err_basic_data_update[key])
+    elif key == 'communication_channels':
+        ans_list = [[i.name, i.symbol] for i in ChannelCom.select(ChannelCom.name, ChannelCom.symbol)]
+        answer_list = []
+        for ans in ans_list:
+            for i in ans:
+                answer_list.append(i)
+        if not mess.title() in answer_list:
+            return (False,
+                    text_account_basic_datas.err_basic_data_update[key])
+    elif key == 'gender':
+        ans_list = [[i.name, i.symbol] for i in Gender.select(Gender.name, Gender.symbol)]
+        answer_list = []
+        for ans in ans_list:
+            for i in ans:
+                answer_list.append(i)
+        if not mess.title() in answer_list:
+            return (False,
+                    text_account_basic_datas.err_basic_data_update[key])
+    return True, text.update_account_true

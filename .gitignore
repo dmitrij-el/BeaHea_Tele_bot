@@ -1,4 +1,4 @@
 /config/.env
-/data/database.db
+/datas/database.db
 .idea
 /venv/

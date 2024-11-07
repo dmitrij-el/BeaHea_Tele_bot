@@ -1,3 +1,6 @@
+from typing import Any
+
+from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
 """
@@ -5,37 +8,66 @@ from aiogram.fsm.state import StatesGroup, State
 
 """
 
-
 class StateMenu(StatesGroup):
-    menu = State()
+    main_menu = State()
     telegram_channel = State()
-    profile = State()
+    user_profile = State()
     buy_subscription = State()
     buy_marathon = State()
 
+
 class StateUserProfile(StatesGroup):
     the_basic_data = State()
-    the_questionnaire_questions = State()
-    the_goals_questions = State()
-    the_trane_questions = State()
-    the_limits_factors = State()
+    the_body_parameters = State()
+    the_questionnaire = State()
 
 
-class StateUserProfileBasicData(StatesGroup):
+class StateAdminMenu(StatesGroup):
+    admin_main_menu = State()
+    admin_admin_list = State()
+    admin_add_admin_list = State()
+    admin_delete_admin_list = State()
+
+
+class StateUserProfileBasicData(StateUserProfile):
     name = State()
     surname = State()
     patronymic = State()
     date_birth = State()
     gender = State()
-    height = State()
-    weight = State()
     email = State()
     phone = State()
     communication_channels = State()
     clear_profile = State()
 
 
-class StateUserProfileQuestionnaire(StatesGroup):
+class StateUserProfileBodyParameters(StateUserProfile):
+    height = State()
+    weight = State()
+    breast_vol = State()
+    waist_size = State()
+    buttock_volume = State()
+    hip_volume = State()
+    shin_volume = State()
+    shoulder_volume = State()
+    shoulder_volume_in_stressed = State()
+
+
+class StateUserQuestionnaire(StateUserProfile):
+    the_questionnaire_questions = State()
+    the_goals_questions = State()
+    the_trane_questions = State()
+    the_limits_factors = State()
+
+
+class StateRedactorQuestionnaire(StateUserQuestionnaire):
+    redactor_the_questionnaire_questions = State()
+    redactor_the_goals_questions = State()
+    redactor_the_trane_questions = State()
+    redactor_the_limits_factors = State()
+
+
+class StateUserProfileQuestionnaireQuestions(StateUserQuestionnaire):
     question_number_of_meals = State()
     question_diagnosis_high_low_pressure = State()
     question_diagnosis_chronic_disease = State()
@@ -46,7 +78,7 @@ class StateUserProfileQuestionnaire(StatesGroup):
     question_injuries_with_intervention = State()
 
 
-class StateUserProfileGoals(StatesGroup):
+class StateUserProfileGoals(StateUserQuestionnaire):
     question_list_of_goals = State()
     question_one_goal_from_list = State()
     question_formulate_goal = State()
@@ -57,7 +89,7 @@ class StateUserProfileGoals(StatesGroup):
     question_weight_5_year = State()
 
 
-class StateUserProfileTrain(StatesGroup):
+class StateUserProfileTrain(StateUserQuestionnaire):
     question_exp_weight_training = State()
     question_regularly_train_at_the_moment = State()
     question_volume_every_day_activity = State()
@@ -70,7 +102,8 @@ class StateUserProfileTrain(StatesGroup):
     question_vitamins = State()
 
 
-class StateUserProfileLimitsFactors(StatesGroup):
+class StateUserProfileLimitsFactors(StateUserQuestionnaire):
     question_volume_stress = State()
     question_quality_food = State()
     question_quality_sleep = State()
+

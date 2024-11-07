@@ -1,0 +1,1 @@
+from . import text, text_user_questions, text_of_paid_service, text_account_basic_datas, text_admin_navigator
